@@ -11,14 +11,21 @@ public class RWayTrie {
     private static final int ASCII_UPPER_A = 65;
     private Node root;
 
+    public RWayTrie() { /* intentionally empty */ }
+
     private static class Node {
         // value is encoded into the index from that node of the trie
         private Node[] next = new Node[RADIX];
+        // Track if the string ending at this node is a word in the dictionary
+        private boolean isWordInDictionary;
     }
 
     public boolean contains(String key) {
         Node x = get(root, key, 0);
-        return (x != null);
+        if (x == null) {
+            return false;
+        }
+        return x.isWordInDictionary;
     }
 
     private Node get(Node x, String key, int position) {
@@ -29,8 +36,9 @@ public class RWayTrie {
             // End the recursion if we've gone deep enough
             return x;
         }
-        final char c = key.charAt(position);
+
         // index into trie, where 'A' is 0-indexed
+        final char c = key.charAt(position);
         return get(x.next[c - ASCII_UPPER_A], key, position + 1);
     }
 
@@ -43,6 +51,8 @@ public class RWayTrie {
             x = new Node();
         }
         if (key.length() == position) {
+            // Mark this as a word in the dictionary
+            x.isWordInDictionary = true;
             // End the recursion if we've gone deep enough
             return x;
         }

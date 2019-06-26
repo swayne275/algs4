@@ -110,9 +110,9 @@ public class BoggleSolver {
             if (wordValid(currentWordStr)) {
                 storeWord(currentWordStr);
             }
-            else {
-                // If this is a prefix (part of a valid word from the dict),
-                // keep searching the board to see if we can complete the word
+            if (dictionary.keyExists(currentWordStr)) {
+                // This could be a valid or invalid word that is a prefix to a
+                // valid word in the dictionary. If so, keep searching
                 findWord(board, newRow, newCol);
             }
 
