@@ -63,9 +63,9 @@ public class RWayTrie {
         return x;
     }
 
-    /// Return true if {key} is contained in the Trie
-    public boolean keyExists(String key) {
-        Node x = get(root, key, 0);
+    /// True if {key} is a prefix to something in the dictionary
+    public boolean prefixExists(String prefix) {
+        Node x = get(root, prefix, 0);
         return (x != null);
     }
 }

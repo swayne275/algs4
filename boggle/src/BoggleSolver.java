@@ -110,7 +110,7 @@ public class BoggleSolver {
             if (wordValid(currentWordStr)) {
                 storeWord(currentWordStr);
             }
-            if (dictionary.keyExists(currentWordStr)) {
+            if (dictionary.prefixExists(currentWordStr)) {
                 // This could be a valid or invalid word that is a prefix to a
                 // valid word in the dictionary. If so, keep searching
                 findWord(board, newRow, newCol);
@@ -224,8 +224,7 @@ public class BoggleSolver {
      * @return Score of the given word (0 if not in dictionary)
      */
     public int scoreOf(String word) {
-        if (!dictionary.keyExists(word)) {
-            // The word is not in the dictionary
+        if (!dictionary.contains(word)) {
             return 0;
         }
 
