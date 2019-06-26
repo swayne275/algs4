@@ -4,51 +4,58 @@
  *  Description:
  **************************************************************************** */
 
-public class RWayTrie<Value> {
-    private static final int RADIX = 25; // uppercase A through Z, Q == Qu
-    private Node root = new Node();
-    // !!! SW handle q -> qu edge case
+public class RWayTrie {
+    /// Valid range of characters is ASCII 'A' to ASCII 'Z'
+    private static final int RADIX = 26;
+    /// ASCII representation for 'A'
+    private static final int ASCII_UPPER_A = 65;
+    private Node root;
 
     private static class Node {
-        private Object value;
+        // value is encoded into the index from that node of the trie
         private Node[] next = new Node[RADIX];
     }
 
-    public void put(String word, Value value) {
-        root = put(root, word, value, 0);
+    public boolean contains(String key) {
+        Node x = get(root, key, 0);
+        return (x != null);
     }
 
-    private Node put(Node x, String key, Value val, int pos) {
-        if (x == null) x = new Node();
-        if (pos == key.length()) {
-            x.value = val;
+    private Node get(Node x, String key, int position) {
+        if (x == null) {
+            return null;
+        }
+        if (key.length() == position) {
+            // End the recursion if we've gone deep enough
             return x;
         }
-        char c = key.charAt(pos);
-        x.next[c] = put(x, key, val, pos + 1);
+        final char c = key.charAt(position);
+        // index into trie, where 'A' is 0-indexed
+        return get(x.next[c - ASCII_UPPER_A], key, position + 1);
+    }
+
+    public void put(String key) {
+        root = put(root, key, 0);
+    }
+
+    private Node put(Node x, String key, int position) {
+        if (x == null) {
+            x = new Node();
+        }
+        if (key.length() == position) {
+            // End the recursion if we've gone deep enough
+            return x;
+        }
+
+        final char c = key.charAt(position);
+        final int triePos = c - ASCII_UPPER_A;
+        x.next[triePos] = put(x.next[triePos], key, position + 1);
         return x;
     }
 
-    public boolean contains(String word) {
-        return get(word) != null;
-    }
-
-    public Value get(String word) {
-        Node x = get(root, word, 0);
-        if (x == null) {
-            return null;
-        }
-        return (Value) x.value;
-    }
-
-    private Node get(Node x, String key, int pos) {
-        if (x == null) {
-            return null;
-        }
-        if (pos == key.length()) {
-            return x;
-        }
-        char c = key.charAt(pos);
-        return get(x.next[c], key, pos + 1);
+    /// Return true if {key} is contained in the Trie
+    public boolean keyExists(String key) {
+        Node x = get(root, key, 0);
+        return (x != null);
     }
 }
